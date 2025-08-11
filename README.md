@@ -7,6 +7,9 @@ Hỗ trợ **giao diện dark mode**, thiết kế tối giản, chạy **thuầ
 ## 🌐 Live
 - https://rroyal1504.github.io/hocba-calculator/
 
+> ❓ Còn bao nhiêu ngày nữa đến kỳ thi THPT Quốc Gia?  
+> Xem ngay tại đây: **[Đếm ngược THPTQG 2026](https://rroyal1504.github.io/thptqg-countdown/)** ⏳
+
 ## ✨ Tính năng chính
 - **Tính điểm học bạ**: Tự động tính trung bình từng môn (3 năm), cộng thành tổng (thang 30).
 - **Cộng điểm ưu tiên**: Khu vực, đối tượng, thành tích học tập (có bảng tra).
