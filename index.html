@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Điểm Học Bạ & Ưu Tiên</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+        
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            margin-bottom: -5px;
+        }
+        
+        /* Dark theme select dropdown fixes */
+        select {
+            color-scheme: dark;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        select option {
+            background-color: #1e1e2f !important;
+            color: #ffffff !important;
+            padding: 8px 12px;
+        }
+        
+        select option:hover,
+        select option:focus,
+        select option:checked {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+        }
+        
+        /* Firefox specific fixes */
+        @-moz-document url-prefix() {
+            select {
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            }
+            
+            select option {
+                background-color: #1e1e2f;
+                color: #ffffff;
+            }
+            
+            select option:hover {
+                background-color: #3b82f6;
+                color: #ffffff;
+            }
+        }
+        
+        /* WebKit specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            select {
+                background-color: rgba(255, 255, 255, 0.08);
+                color: white;
+            }
+            
+            select option {
+                background-color: #1e1e2f;
+                color: #ffffff;
+            }
+            
+            select option:hover {
+                background-color: #3b82f6;
+                color: #ffffff;
+            }
+        }
+        
+        /* Additional cross-browser compatibility */
+        select::-ms-expand {
+            display: none;
+        }
+        
+        select:-moz-focusring {
+            color: transparent;
+            text-shadow: 0 0 0 #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen text-white font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Tính Điểm Học Bạ & Ưu Tiên
+            </h1>
+
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Form nhập điểm -->
+            <div class="lg:col-span-2">
+                <div class="glass rounded-xl p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        📚 Nhập Điểm 3 Môn
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Môn 1 -->
+                        <div class="space-y-3">
+                            <h3 class="font-medium text-blue-300">Môn 1</h3>
+                            <div class="space-y-2">
+                                <input type="number" id="m1-l10" placeholder="Điểm lớp 10" min="0" max="10" step="0.1" 
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="number" id="m1-l11" placeholder="Điểm lớp 11" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <input type="number" id="m1-l12" placeholder="Điểm lớp 12" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <div class="text-sm text-gray-300">TB: <span id="avg-m1" class="font-semibold text-blue-300">0.00</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Môn 2 -->
+                        <div class="space-y-3">
+                            <h3 class="font-medium text-green-300">Môn 2</h3>
+                            <div class="space-y-2">
+                                <input type="number" id="m2-l10" placeholder="Điểm lớp 10" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="m2-l11" placeholder="Điểm lớp 11" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="m2-l12" placeholder="Điểm lớp 12" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <div class="text-sm text-gray-300">TB: <span id="avg-m2" class="font-semibold text-green-300">0.00</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Môn 3 -->
+                        <div class="space-y-3">
+                            <h3 class="font-medium text-purple-300">Môn 3</h3>
+                            <div class="space-y-2">
+                                <input type="number" id="m3-l10" placeholder="Điểm lớp 10" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <input type="number" id="m3-l11" placeholder="Điểm lớp 11" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <input type="number" id="m3-l12" placeholder="Điểm lớp 12" min="0" max="10" step="0.1"
+                                       class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <div class="text-sm text-gray-300">TB: <span id="avg-m3" class="font-semibold text-purple-300">0.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cấu hình điểm ưu tiên -->
+                <div class="glass rounded-xl p-6 mb-6">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        ⚙️ Cấu Hình Điểm Ưu Tiên
+                        <span class="tooltip ml-2 cursor-help text-blue-400" data-tooltip="Chính sách điểm ưu tiên Chuẩn Bộ giảm từ 22,5→30; ngưỡng 28 chỉ là tùy biến theo yêu cầu từng trường">ⓘ</span>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Chế độ tính -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Chế độ tính điểm ưu tiên</label>
+                            <select id="priority-mode" class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="MOET">Chuẩn Bộ (22.5 → 30)</option>
+                                <option value="CUSTOM">Tùy biến</option>
+                            </select>
+                        </div>
+
+                        <!-- Tùy biến (ẩn mặc định) -->
+                        <div id="custom-options" class="hidden space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Ngưỡng</label>
+                                <input type="number" id="custom-threshold" value="28" min="0" max="30" step="0.1"
+                                       class="w-full p-2 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Mẫu số</label>
+                                <input type="number" id="custom-denom" value="2" min="0.1" step="0.1"
+                                       class="w-full p-2 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Khu vực -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Khu vực</label>
+                            <select id="area-bonus" class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500 relative z-10">
+                                <option value="0.75" selected>KV1 (0.75 điểm)</option>
+                                <option value="0.5">KV2-NT (0.50 điểm)</option>
+                                <option value="0.25">KV2 (0.25 điểm)</option>
+                                <option value="0">KV3 (0.00 điểm)</option>
+                            </select>
+                        </div>
+
+                        <!-- Đối tượng -->
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Điểm đối tượng</label>
+                            <input type="number" id="category-bonus" value="0" min="0" max="1" step="0.01"
+                                   class="w-full p-3 rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng thành tích -->
+            <div class="glass rounded-xl p-6">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    🏆 Thành Tích
+                </h2>
+                
+                <div class="space-y-2 max-h-96 overflow-y-auto" id="achievements-list">
+                    <!-- Sẽ được tạo bởi JavaScript -->
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-600">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="allow-multiple" class="rounded">
+                        <span class="text-sm">Cho phép cộng dồn nhiều thành tích</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kết quả -->
+        <div class="glass rounded-xl p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                📊 Kết Quả
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" aria-live="polite">
+                <div class="bg-blue-500/20 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-blue-300" id="total-30">0.00</div>
+                    <div class="text-sm text-gray-300">Tổng điểm học bạ (30)</div>
+                </div>
+                
+                <div class="bg-green-500/20 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-green-300" id="base-bonus">0.00</div>
+                    <div class="text-sm text-gray-300">Ưu tiên cơ sở</div>
+                </div>
+                
+                <div class="bg-purple-500/20 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-purple-300" id="final-bonus">0.00</div>
+                    <div class="text-sm text-gray-300">Điểm ưu tiên sau giảm</div>
+                </div>
+                
+                <div class="bg-yellow-500/20 rounded-lg p-4 text-center">
+                    <div class="text-2xl font-bold text-yellow-300" id="final-total">0.00</div>
+                    <div class="text-sm text-gray-300">Tổng cuối cùng</div>
+                </div>
+            </div>
+            
+            <!-- Chi tiết -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="space-y-1">
+                    <div class="font-medium text-blue-300">Chi tiết ưu tiên cơ sở:</div>
+                    <div>Khu vực: <span id="detail-area">0.00</span></div>
+                    <div>Đối tượng: <span id="detail-category">0.00</span></div>
+                    <div>Thành tích: <span id="detail-achievement">0.00</span></div>
+                </div>
+                
+                <div class="space-y-1">
+                    <div class="font-medium text-green-300">Công thức áp dụng:</div>
+                    <div id="formula-display" class="text-gray-300">Chuẩn Bộ: (30-Tổng)/7.5 × Ưu tiên cơ sở</div>
+                </div>
+                
+                <div class="space-y-2">
+                    <button id="reset-btn" class="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 py-2 px-4 rounded-lg transition-colors">
+                        🔄 Reset
+                    </button>
+                    <button id="copy-btn" class="w-full bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 py-2 px-4 rounded-lg transition-colors">
+                        📋 Copy kết quả
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ước lượng điểm -->
+        <div class="glass rounded-xl p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                🎯 Ước Lượng Điểm Để Đạt Mục Tiêu
+            </h2>
+            
+            <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-4">
+                <div class="text-sm text-blue-300">
+                    💡 <strong>Hint:</strong> Nhập điểm của bạn ở năm lớp 10 hoặc 11 hoặc 12 để ước lượng
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Cấu hình mục tiêu -->
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Loại mục tiêu</label>
+                            <select id="target-type" class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="academic">Học bạ thuần (thang 30)</option>
+                                <option value="total">Tổng cuối (có ưu tiên)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Mục tiêu (G)</label>
+                            <input type="number" id="target-score" value="24" min="0" max="30" step="0.01"
+                                   class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Chiến lược phân bổ</label>
+                        <select id="strategy" class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="even">Chia đều</option>
+                            <option value="history">Theo năng lực quá khứ</option>
+                            <option value="minimax">Minimax (gần 8.0)</option>
+                        </select>
+                        
+                        <!-- Strategy explanations -->
+                        <div class="mt-3 p-3 bg-white/5 rounded-lg text-xs space-y-2" id="strategy-explanation">
+                            <div id="even-explanation" class="strategy-info">
+                                <div class="font-medium text-blue-300">📊 Chia đều</div>
+                                <div class="text-gray-300 mb-1">Lấy số điểm cần thêm và chia đều cho 3 môn.</div>
+                                <div class="text-green-300">✅ Ưu điểm: đơn giản, dễ hiểu.</div>
+                                <div class="text-red-300">❌ Nhược điểm: có thể bắt bạn nâng quá nhiều ở môn yếu hoặc giảm ở môn mạnh.</div>
+                            </div>
+                            
+                            <div id="history-explanation" class="strategy-info hidden">
+                                <div class="font-medium text-green-300">📈 Theo năng lực quá khứ</div>
+                                <div class="text-gray-300 mb-1">Dựa trên điểm TB của Lớp 10 và 11 để quyết định môn nào gánh nhiều hơn.</div>
+                                <div class="text-gray-300 mb-1">Môn bạn học tốt hơn → tăng nhiều hơn. Môn yếu → tăng ít hoặc giữ nguyên.</div>
+                                <div class="text-yellow-300">💡 Ví dụ: Bạn giỏi Anh → điểm cần tăng sẽ dồn nhiều vào Anh.</div>
+                            </div>
+                            
+                            <div id="minimax-explanation" class="strategy-info hidden">
+                                <div class="font-medium text-purple-300">⚖️ Giới hạn tối đa công sức (Minimax)</div>
+                                <div class="text-gray-300 mb-1">Mục tiêu: thay đổi ít nhất so với "điểm cơ sở" (thường mặc định là 8.0 hoặc theo thực tế bạn nhập).</div>
+                                <div class="text-gray-300 mb-1">Giảm việc phải kéo điểm một môn quá cao so với mức quen thuộc.</div>
+                                <div class="text-gray-300 mb-1">Phân bổ sao cho mức lệch lớn nhất giữa điểm mới và điểm cơ sở là nhỏ nhất có thể.</div>
+                                <div class="text-green-300">✅ Tốt nếu bạn muốn công sức bỏ ra cân bằng, không quá áp lực vào 1 môn.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Điểm tối thiểu</label>
+                            <input type="number" id="min-score" value="0" min="0" max="10" step="0.1"
+                                   class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Điểm tối đa</label>
+                            <input type="number" id="max-score" value="10" min="0" max="10" step="0.1"
+                                   class="w-full p-3 rounded-lg input-glass text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <button id="estimate-btn" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3 px-6 rounded-lg font-medium transition-all">
+                        🔮 Tính Ước Lượng
+                    </button>
+                </div>
+                
+                <!-- Kết quả ước lượng -->
+                <div class="space-y-4">
+                    <div id="estimation-result" class="hidden">
+                        <div class="bg-green-500/20 rounded-lg p-4 mb-4">
+                            <div class="text-center">
+                                <div class="text-lg font-semibold text-green-300" id="est-status">Đạt được mục tiêu!</div>
+                                <div class="text-sm text-gray-300 mt-1">
+                                    Học bạ: <span id="est-academic">0.00</span> | 
+                                    Ưu tiên: <span id="est-priority">0.00</span> | 
+                                    Tổng: <span id="est-total">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2" id="estimation-table">
+                            <!-- Bảng điểm đề xuất sẽ được tạo bởi JS -->
+                        </div>
+                        
+                        <button id="apply-estimation" class="w-full bg-green-500/20 hover:bg-green-500/30 text-green-300 py-2 px-4 rounded-lg transition-colors">
+                            ✅ Áp Dụng Kết Quả
+                        </button>
+                    </div>
+                    
+                    <div id="estimation-error" class="hidden bg-red-500/20 rounded-lg p-4">
+                        <div class="text-red-300 font-medium">Không khả thi!</div>
+                        <div class="text-sm text-gray-300 mt-1" id="error-message">
+                            Mục tiêu tối đa có thể đạt: <span id="max-achievable">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-8 text-gray-400 text-sm">
+            <p>© 2025 - Made by rRoyal</p>
+        </footer>
+    </div>
+
+    <script>
+        // Cấu hình thành tích (JSON)
+        const ACHIEVEMENTS = [
+            { id: 'hsg-quoc-gia-123', label: 'HSG Quốc gia/quốc tế (nhất/nhì/ba)', base: 2.00 },
+            { id: 'khkt-quoc-gia-123', label: 'KHKT quốc gia (nhất/nhì/ba) cùng ngành', base: 2.00 },
+            { id: 'hsg-quoc-gia-kk', label: 'HSG quốc gia/quốc tế (KK)', base: 1.75 },
+            { id: 'khkt-quoc-gia-4', label: 'KHKT quốc gia (giải tư) cùng ngành', base: 1.75 },
+            { id: 'hsg-tinh-12', label: 'HSG cấp tỉnh/thành (nhất/nhì)', base: 1.50 },
+            { id: 'hsg-tinh-3', label: 'HSG cấp tỉnh/thành (ba)', base: 1.00 },
+            { id: 'khkt-tinh-12', label: 'KHKT cấp tỉnh/thành (nhất/nhì) cùng ngành', base: 1.50 },
+            { id: 'khkt-tinh-3', label: 'KHKT cấp tỉnh/thành (ba) cùng ngành', base: 1.00 },
+            { id: 'icpc-thpt-12', label: 'ICPC THPT (vô địch/nhất/nhì)', base: 2.00 },
+            { id: 'icpc-thpt-3kk', label: 'ICPC THPT (ba/KK)', base: 1.75 },
+            { id: 'olympic-304-vb', label: 'Olympic 30/4 (Vàng/Bạc)', base: 1.50 },
+            { id: 'olympic-304-d', label: 'Olympic 30/4 (Đồng)', base: 1.00 }
+        ];
+
+        // Utility functions
+        function round2(num) {
+            return Math.round((num + Number.EPSILON) * 100) / 100;
+        }
+
+        function avg3(a, b, c) {
+            return round2((a + b + c) / 3);
+        }
+
+        // Core calculation function
+        function calcPriority(total, baseBonus, mode, options = {}) {
+            const { threshold, denom } = mode === 'MOET'
+                ? { threshold: 22.5, denom: 7.5 }
+                : { threshold: options.threshold ?? 28, denom: options.denom ?? 2 };
+            
+            if (baseBonus <= 0) return 0;
+            if (total < threshold) return round2(baseBonus);
+            
+            const scaled = ((30 - total) / denom) * baseBonus;
+            return round2(Math.max(0, scaled));
+        }
+
+        // Estimation solver functions
+        /**
+         * Solves for required scores to achieve target
+         * @param {Object} config - Configuration object
+         * @returns {Object} Solution with scores and feasibility
+         */
+        function solveEstimation(config) {
+            const { target, targetType, strategy, minScore, maxScore, currentScores, bonusConfig } = config;
+            
+            // Get current state of scores (3 subjects x 3 years)
+            const scores = [...currentScores];
+            const unknowns = []; // Track which positions need solving
+            
+            // Find unknown positions
+            for (let i = 0; i < 9; i++) {
+                if (scores[i] === null || scores[i] === undefined || isNaN(scores[i])) {
+                    unknowns.push(i);
+                    scores[i] = 0; // Temporary placeholder
+                }
+            }
+            
+            if (unknowns.length === 0) {
+                return { feasible: false, reason: 'Không có điểm nào cần ước lượng' };
+            }
+            
+            // Calculate target academic score needed
+            let targetAcademic;
+            if (targetType === 'academic') {
+                targetAcademic = target;
+            } else {
+                // Solve backwards from total target
+                targetAcademic = solveAcademicFromTotal(target, bonusConfig);
+                if (targetAcademic === null) {
+                    return { feasible: false, reason: 'Không thể đạt mục tiêu với điểm ưu tiên hiện tại' };
+                }
+            }
+            
+            // Check feasibility bounds
+            const maxPossible = calculateMaxPossible(scores, unknowns, maxScore);
+            const minPossible = calculateMinPossible(scores, unknowns, minScore);
+            
+            if (targetAcademic > maxPossible || targetAcademic < minPossible) {
+                return {
+                    feasible: false,
+                    reason: 'Mục tiêu ngoài khả năng',
+                    maxAchievable: maxPossible,
+                    minAchievable: minPossible
+                };
+            }
+            
+            // Distribute scores according to strategy
+            const solution = distributeScores(scores, unknowns, targetAcademic, strategy, minScore, maxScore);
+            
+            if (!solution.feasible) {
+                return solution;
+            }
+            
+            // Calculate final results
+            const finalScores = [...solution.scores];
+            const subjectAvgs = [
+                avg3(finalScores[0], finalScores[1], finalScores[2]),
+                avg3(finalScores[3], finalScores[4], finalScores[5]),
+                avg3(finalScores[6], finalScores[7], finalScores[8])
+            ];
+            const academicTotal = round2(subjectAvgs[0] + subjectAvgs[1] + subjectAvgs[2]);
+            const priorityScore = calcPriority(academicTotal, bonusConfig.baseBonus, bonusConfig.mode, bonusConfig.options);
+            const finalTotal = round2(academicTotal + priorityScore);
+            
+            return {
+                feasible: true,
+                scores: finalScores,
+                unknowns,
+                subjectAvgs,
+                academicTotal,
+                priorityScore,
+                finalTotal,
+                targetAcademic,
+                strategy
+            };
+        }
+        
+        /**
+         * Solve academic score needed from total target (inverse function)
+         * Uses binary search since priority function is monotonic
+         */
+        function solveAcademicFromTotal(totalTarget, bonusConfig) {
+            const { baseBonus, mode, options } = bonusConfig;
+            
+            if (baseBonus <= 0) {
+                return totalTarget; // No priority bonus
+            }
+            
+            // Binary search for academic score
+            let low = 0, high = 30;
+            const tolerance = 0.001;
+            
+            for (let iter = 0; iter < 100; iter++) {
+                const mid = (low + high) / 2;
+                const priority = calcPriority(mid, baseBonus, mode, options);
+                const total = mid + priority;
+                
+                if (Math.abs(total - totalTarget) < tolerance) {
+                    return round2(mid);
+                }
+                
+                if (total < totalTarget) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+            }
+            
+            return null; // Failed to converge
+        }
+        
+        /**
+         * Calculate maximum possible academic score
+         */
+        function calculateMaxPossible(scores, unknowns, maxScore) {
+            const testScores = [...scores];
+            unknowns.forEach(i => testScores[i] = maxScore);
+            
+            const avgs = [
+                avg3(testScores[0], testScores[1], testScores[2]),
+                avg3(testScores[3], testScores[4], testScores[5]),
+                avg3(testScores[6], testScores[7], testScores[8])
+            ];
+            
+            return round2(avgs[0] + avgs[1] + avgs[2]);
+        }
+        
+        /**
+         * Calculate minimum possible academic score
+         */
+        function calculateMinPossible(scores, unknowns, minScore) {
+            const testScores = [...scores];
+            unknowns.forEach(i => testScores[i] = minScore);
+            
+            const avgs = [
+                avg3(testScores[0], testScores[1], testScores[2]),
+                avg3(testScores[3], testScores[4], testScores[5]),
+                avg3(testScores[6], testScores[7], testScores[8])
+            ];
+            
+            return round2(avgs[0] + avgs[1] + avgs[2]);
+        }
+        
+        /**
+         * Distribute scores according to strategy
+         */
+        function distributeScores(scores, unknowns, targetAcademic, strategy, minScore, maxScore) {
+            const result = [...scores];
+            
+            // Calculate current sum and required additional sum
+            const currentSum = calculateCurrentAcademicSum(scores, unknowns);
+            const requiredSum = targetAcademic * 3; // Convert to sum of all 9 scores
+            const additionalSum = requiredSum - currentSum;
+            
+            if (additionalSum < unknowns.length * minScore || additionalSum > unknowns.length * maxScore) {
+                return { feasible: false, reason: 'Không thể phân bổ trong giới hạn min/max' };
+            }
+            
+            let distribution;
+            
+            switch (strategy) {
+                case 'even':
+                    distribution = distributeEvenly(additionalSum, unknowns.length, minScore, maxScore);
+                    break;
+                case 'history':
+                    distribution = distributeByHistory(scores, unknowns, additionalSum, minScore, maxScore);
+                    break;
+                case 'minimax':
+                    distribution = distributeMinimax(additionalSum, unknowns.length, minScore, maxScore);
+                    break;
+                default:
+                    distribution = distributeEvenly(additionalSum, unknowns.length, minScore, maxScore);
+            }
+            
+            if (!distribution.feasible) {
+                return distribution;
+            }
+            
+            // Apply distribution
+            unknowns.forEach((pos, i) => {
+                result[pos] = round2(distribution.values[i]);
+            });
+            
+            return { feasible: true, scores: result };
+        }
+        
+        /**
+         * Calculate current academic sum (excluding unknowns)
+         */
+        function calculateCurrentAcademicSum(scores, unknowns) {
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                if (!unknowns.includes(i)) {
+                    sum += scores[i] || 0;
+                }
+            }
+            return sum;
+        }
+        
+        /**
+         * Distribute evenly
+         */
+        function distributeEvenly(totalSum, count, minScore, maxScore) {
+            const avg = totalSum / count;
+            
+            if (avg < minScore || avg > maxScore) {
+                return { feasible: false, reason: 'Phân bổ đều vượt giới hạn' };
+            }
+            
+            return {
+                feasible: true,
+                values: new Array(count).fill(avg)
+            };
+        }
+        
+        /**
+         * Distribute by historical performance
+         */
+        function distributeByHistory(scores, unknowns, totalSum, minScore, maxScore) {
+            // Calculate average of known scores
+            const knownScores = [];
+            for (let i = 0; i < 9; i++) {
+                if (!unknowns.includes(i) && scores[i] > 0) {
+                    knownScores.push(scores[i]);
+                }
+            }
+            
+            const historyAvg = knownScores.length > 0 
+                ? knownScores.reduce((a, b) => a + b, 0) / knownScores.length 
+                : 8.0; // Default fallback
+            
+            // Try to use history average, adjust if needed
+            let targetScore = Math.max(minScore, Math.min(maxScore, historyAvg));
+            const totalNeeded = targetScore * unknowns.length;
+            
+            if (Math.abs(totalNeeded - totalSum) > 0.1) {
+                // Adjust proportionally
+                targetScore = Math.max(minScore, Math.min(maxScore, totalSum / unknowns.length));
+            }
+            
+            return {
+                feasible: true,
+                values: new Array(unknowns.length).fill(targetScore)
+            };
+        }
+        
+        /**
+         * Distribute using minimax strategy (close to 8.0)
+         */
+        function distributeMinimax(totalSum, count, minScore, maxScore) {
+            const target = 8.0;
+            const clampedTarget = Math.max(minScore, Math.min(maxScore, target));
+            const totalTarget = clampedTarget * count;
+            
+            if (Math.abs(totalTarget - totalSum) < 0.1) {
+                return {
+                    feasible: true,
+                    values: new Array(count).fill(clampedTarget)
+                };
+            }
+            
+            // Adjust while staying close to 8.0
+            const adjustment = (totalSum - totalTarget) / count;
+            const finalScore = Math.max(minScore, Math.min(maxScore, clampedTarget + adjustment));
+            
+            return {
+                feasible: true,
+                values: new Array(count).fill(finalScore)
+            };
+        }
+
+        // DOM elements
+        const elements = {
+            // Inputs
+            m1Inputs: ['m1-l10', 'm1-l11', 'm1-l12'].map(id => document.getElementById(id)),
+            m2Inputs: ['m2-l10', 'm2-l11', 'm2-l12'].map(id => document.getElementById(id)),
+            m3Inputs: ['m3-l10', 'm3-l11', 'm3-l12'].map(id => document.getElementById(id)),
+            
+            // Averages
+            avgM1: document.getElementById('avg-m1'),
+            avgM2: document.getElementById('avg-m2'),
+            avgM3: document.getElementById('avg-m3'),
+            
+            // Configuration
+            priorityMode: document.getElementById('priority-mode'),
+            customOptions: document.getElementById('custom-options'),
+            customThreshold: document.getElementById('custom-threshold'),
+            customDenom: document.getElementById('custom-denom'),
+            areaBonus: document.getElementById('area-bonus'),
+            categoryBonus: document.getElementById('category-bonus'),
+            allowMultiple: document.getElementById('allow-multiple'),
+            
+            // Results
+            total30: document.getElementById('total-30'),
+            baseBonus: document.getElementById('base-bonus'),
+            finalBonus: document.getElementById('final-bonus'),
+            finalTotal: document.getElementById('final-total'),
+            
+            // Details
+            detailArea: document.getElementById('detail-area'),
+            detailCategory: document.getElementById('detail-category'),
+            detailAchievement: document.getElementById('detail-achievement'),
+            formulaDisplay: document.getElementById('formula-display'),
+            
+            // Buttons
+            resetBtn: document.getElementById('reset-btn'),
+            copyBtn: document.getElementById('copy-btn'),
+            
+            // Achievements
+            achievementsList: document.getElementById('achievements-list'),
+            
+            // Estimation
+            targetType: document.getElementById('target-type'),
+            targetScore: document.getElementById('target-score'),
+            strategy: document.getElementById('strategy'),
+            minScore: document.getElementById('min-score'),
+            maxScore: document.getElementById('max-score'),
+            estimateBtn: document.getElementById('estimate-btn'),
+            estimationResult: document.getElementById('estimation-result'),
+            estimationError: document.getElementById('estimation-error'),
+            estStatus: document.getElementById('est-status'),
+            estAcademic: document.getElementById('est-academic'),
+            estPriority: document.getElementById('est-priority'),
+            estTotal: document.getElementById('est-total'),
+            estimationTable: document.getElementById('estimation-table'),
+            applyEstimation: document.getElementById('apply-estimation'),
+            errorMessage: document.getElementById('error-message'),
+            maxAchievable: document.getElementById('max-achievable')
+        };
+
+        // Initialize achievements list
+        function initAchievements() {
+            elements.achievementsList.innerHTML = ACHIEVEMENTS.map(achievement => `
+                <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-white/5 transition-colors">
+                    <input type="checkbox" class="achievement-checkbox rounded" data-id="${achievement.id}" data-base="${achievement.base}">
+                    <span class="text-sm flex-1">${achievement.label}</span>
+                    <span class="text-xs text-gray-400">+${achievement.base.toFixed(2)}</span>
+                </label>
+            `).join('');
+        }
+
+        // Calculate and update display
+        function calculate() {
+            // Get input values
+            const m1Values = elements.m1Inputs.map(input => parseFloat(input.value) || 0);
+            const m2Values = elements.m2Inputs.map(input => parseFloat(input.value) || 0);
+            const m3Values = elements.m3Inputs.map(input => parseFloat(input.value) || 0);
+            
+            // Calculate averages
+            const avgM1 = avg3(...m1Values);
+            const avgM2 = avg3(...m2Values);
+            const avgM3 = avg3(...m3Values);
+            
+            // Update average displays
+            elements.avgM1.textContent = avgM1.toFixed(2);
+            elements.avgM2.textContent = avgM2.toFixed(2);
+            elements.avgM3.textContent = avgM3.toFixed(2);
+            
+            // Calculate total (30 scale)
+            const total30 = round2(avgM1 + avgM2 + avgM3);
+            
+            // Get bonus components
+            const areaBonus = parseFloat(elements.areaBonus.value) || 0;
+            const categoryBonus = parseFloat(elements.categoryBonus.value) || 0;
+            
+            // Calculate achievement bonus
+            const achievementCheckboxes = document.querySelectorAll('.achievement-checkbox:checked');
+            let achievementBonus = 0;
+            
+            if (elements.allowMultiple.checked) {
+                // Allow multiple achievements
+                achievementCheckboxes.forEach(checkbox => {
+                    achievementBonus += parseFloat(checkbox.dataset.base) || 0;
+                });
+            } else {
+                // Only highest achievement
+                let maxAchievement = 0;
+                achievementCheckboxes.forEach(checkbox => {
+                    const base = parseFloat(checkbox.dataset.base) || 0;
+                    if (base > maxAchievement) {
+                        maxAchievement = base;
+                    }
+                });
+                achievementBonus = maxAchievement;
+            }
+            
+            achievementBonus = round2(achievementBonus);
+            
+            // Calculate base bonus
+            const baseBonus = round2(areaBonus + categoryBonus + achievementBonus);
+            
+            // Calculate priority bonus
+            const mode = elements.priorityMode.value;
+            const options = {
+                threshold: parseFloat(elements.customThreshold.value) || 28,
+                denom: parseFloat(elements.customDenom.value) || 2
+            };
+            
+            const finalBonus = calcPriority(total30, baseBonus, mode, options);
+            const finalTotal = round2(total30 + finalBonus);
+            
+            // Update displays
+            elements.total30.textContent = total30.toFixed(2);
+            elements.baseBonus.textContent = baseBonus.toFixed(2);
+            elements.finalBonus.textContent = finalBonus.toFixed(2);
+            elements.finalTotal.textContent = finalTotal.toFixed(2);
+            
+            // Update details
+            elements.detailArea.textContent = areaBonus.toFixed(2);
+            elements.detailCategory.textContent = categoryBonus.toFixed(2);
+            elements.detailAchievement.textContent = achievementBonus.toFixed(2);
+            
+            // Update formula display
+            if (mode === 'MOET') {
+                elements.formulaDisplay.textContent = 'Chuẩn Bộ: (30-Tổng)/7.5 × Ưu tiên cơ sở';
+            } else {
+                const threshold = options.threshold;
+                const denom = options.denom;
+                elements.formulaDisplay.textContent = `Tùy biến: (30-Tổng)/${denom} × Ưu tiên cơ sở (ngưỡng: ${threshold})`;
+            }
+            
+            // Save to localStorage
+            saveState();
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            const state = {
+                m1: elements.m1Inputs.map(input => input.value),
+                m2: elements.m2Inputs.map(input => input.value),
+                m3: elements.m3Inputs.map(input => input.value),
+                priorityMode: elements.priorityMode.value,
+                customThreshold: elements.customThreshold.value,
+                customDenom: elements.customDenom.value,
+                areaBonus: elements.areaBonus.value,
+                categoryBonus: elements.categoryBonus.value,
+                allowMultiple: elements.allowMultiple.checked,
+                achievements: Array.from(document.querySelectorAll('.achievement-checkbox:checked')).map(cb => cb.dataset.id)
+            };
+            
+            localStorage.setItem('gradeCalculatorState', JSON.stringify(state));
+        }
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('gradeCalculatorState');
+            if (!saved) return;
+            
+            try {
+                const state = JSON.parse(saved);
+                
+                // Load inputs
+                state.m1?.forEach((value, index) => {
+                    if (elements.m1Inputs[index]) elements.m1Inputs[index].value = value;
+                });
+                state.m2?.forEach((value, index) => {
+                    if (elements.m2Inputs[index]) elements.m2Inputs[index].value = value;
+                });
+                state.m3?.forEach((value, index) => {
+                    if (elements.m3Inputs[index]) elements.m3Inputs[index].value = value;
+                });
+                
+                // Load configuration
+                if (state.priorityMode) elements.priorityMode.value = state.priorityMode;
+                if (state.customThreshold) elements.customThreshold.value = state.customThreshold;
+                if (state.customDenom) elements.customDenom.value = state.customDenom;
+                if (state.areaBonus) elements.areaBonus.value = state.areaBonus;
+                if (state.categoryBonus) elements.categoryBonus.value = state.categoryBonus;
+                if (state.allowMultiple !== undefined) elements.allowMultiple.checked = state.allowMultiple;
+                
+                // Load achievements
+                if (state.achievements) {
+                    state.achievements.forEach(id => {
+                        const checkbox = document.querySelector(`[data-id="${id}"]`);
+                        if (checkbox) checkbox.checked = true;
+                    });
+                }
+                
+                // Update custom options visibility
+                toggleCustomOptions();
+                
+            } catch (e) {
+                console.error('Error loading saved state:', e);
+            }
+        }
+
+        // Toggle custom options visibility
+        function toggleCustomOptions() {
+            const isCustom = elements.priorityMode.value === 'CUSTOM';
+            elements.customOptions.classList.toggle('hidden', !isCustom);
+        }
+
+        // Reset form
+        function resetForm() {
+            // Clear all inputs
+            [...elements.m1Inputs, ...elements.m2Inputs, ...elements.m3Inputs].forEach(input => {
+                input.value = '';
+            });
+            
+            elements.categoryBonus.value = '0';
+            elements.customThreshold.value = '28';
+            elements.customDenom.value = '2';
+            
+            // Reset selects
+            elements.priorityMode.value = 'MOET';
+            elements.areaBonus.value = '0.75';
+            
+            // Reset checkboxes
+            elements.allowMultiple.checked = false;
+            document.querySelectorAll('.achievement-checkbox').forEach(cb => {
+                cb.checked = false;
+            });
+            
+            // Clear localStorage
+            localStorage.removeItem('gradeCalculatorState');
+            
+            // Update display
+            toggleCustomOptions();
+            calculate();
+        }
+
+        // Estimation functions
+        function runEstimation() {
+            // Get current scores
+            const currentScores = [
+                ...elements.m1Inputs.map(input => parseFloat(input.value) || null),
+                ...elements.m2Inputs.map(input => parseFloat(input.value) || null),
+                ...elements.m3Inputs.map(input => parseFloat(input.value) || null)
+            ];
+            
+            // Get bonus configuration
+            const areaBonus = parseFloat(elements.areaBonus.value) || 0;
+            const categoryBonus = parseFloat(elements.categoryBonus.value) || 0;
+            
+            // Calculate achievement bonus
+            const achievementCheckboxes = document.querySelectorAll('.achievement-checkbox:checked');
+            let achievementBonus = 0;
+            
+            if (elements.allowMultiple.checked) {
+                achievementCheckboxes.forEach(checkbox => {
+                    achievementBonus += parseFloat(checkbox.dataset.base) || 0;
+                });
+            } else {
+                let maxAchievement = 0;
+                achievementCheckboxes.forEach(checkbox => {
+                    const base = parseFloat(checkbox.dataset.base) || 0;
+                    if (base > maxAchievement) {
+                        maxAchievement = base;
+                    }
+                });
+                achievementBonus = maxAchievement;
+            }
+            
+            const baseBonus = round2(areaBonus + categoryBonus + achievementBonus);
+            
+            const bonusConfig = {
+                baseBonus,
+                mode: elements.priorityMode.value,
+                options: {
+                    threshold: parseFloat(elements.customThreshold.value) || 28,
+                    denom: parseFloat(elements.customDenom.value) || 2
+                }
+            };
+            
+            // Get estimation parameters
+            const config = {
+                target: parseFloat(elements.targetScore.value) || 24,
+                targetType: elements.targetType.value,
+                strategy: elements.strategy.value,
+                minScore: parseFloat(elements.minScore.value) || 0,
+                maxScore: parseFloat(elements.maxScore.value) || 10,
+                currentScores,
+                bonusConfig
+            };
+            
+            // Solve
+            const solution = solveEstimation(config);
+            
+            // Display results
+            displayEstimationResults(solution);
+            
+            // Save estimation state
+            saveEstimationState();
+        }
+        
+        function displayEstimationResults(solution) {
+            if (!solution.feasible) {
+                // Show error
+                elements.estimationResult.classList.add('hidden');
+                elements.estimationError.classList.remove('hidden');
+                
+                if (solution.maxAchievable !== undefined) {
+                    elements.maxAchievable.textContent = solution.maxAchievable.toFixed(2);
+                    elements.errorMessage.innerHTML = `Mục tiêu tối đa có thể đạt: <span id="max-achievable">${solution.maxAchievable.toFixed(2)}</span>`;
+                } else {
+                    elements.errorMessage.textContent = solution.reason || 'Không khả thi';
+                }
+                return;
+            }
+            
+            // Show success
+            elements.estimationError.classList.add('hidden');
+            elements.estimationResult.classList.remove('hidden');
+            
+            // Update summary
+            elements.estAcademic.textContent = solution.academicTotal.toFixed(2);
+            elements.estPriority.textContent = solution.priorityScore.toFixed(2);
+            elements.estTotal.textContent = solution.finalTotal.toFixed(2);
+            
+            // Generate table
+            const tableHTML = generateEstimationTable(solution);
+            elements.estimationTable.innerHTML = tableHTML;
+            
+            // Store solution for apply function
+            window.currentEstimationSolution = solution;
+        }
+        
+        function generateEstimationTable(solution) {
+            const { scores, unknowns, subjectAvgs } = solution;
+            const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
+            const years = ['Lớp 10', 'Lớp 11', 'Lớp 12'];
+            
+            let html = '<div class="text-sm font-medium mb-2 text-blue-300">Điểm đề xuất:</div>';
+            
+            for (let subj = 0; subj < 3; subj++) {
+                html += `<div class="bg-white/5 rounded-lg p-3 mb-2">`;
+                html += `<div class="font-medium text-${['blue', 'green', 'purple'][subj]}-300 mb-2">${subjects[subj]} (TB: ${subjectAvgs[subj].toFixed(2)})</div>`;
+                html += `<div class="grid grid-cols-3 gap-2 text-xs">`;
+                
+                for (let year = 0; year < 3; year++) {
+                    const index = subj * 3 + year;
+                    const score = scores[index];
+                    const isUnknown = unknowns.includes(index);
+                    
+                    html += `<div class="flex justify-between">`;
+                    html += `<span class="text-gray-300">${years[year]}:</span>`;
+                    html += `<span class="${isUnknown ? 'text-yellow-300 font-semibold' : 'text-gray-400'}">${score.toFixed(2)}${isUnknown ? ' *' : ''}</span>`;
+                    html += `</div>`;
+                }
+                
+                html += `</div></div>`;
+            }
+            
+            html += '<div class="text-xs text-yellow-300 mt-2">* Điểm được ước lượng</div>';
+            
+            return html;
+        }
+        
+        function applyEstimation() {
+            const solution = window.currentEstimationSolution;
+            if (!solution) return;
+            
+            const { scores, unknowns } = solution;
+            const allInputs = [...elements.m1Inputs, ...elements.m2Inputs, ...elements.m3Inputs];
+            
+            // Apply only unknown scores
+            unknowns.forEach(index => {
+                if (allInputs[index]) {
+                    allInputs[index].value = scores[index].toFixed(2);
+                }
+            });
+            
+            // Recalculate main form
+            calculate();
+            
+            // Show feedback
+            const originalText = elements.applyEstimation.textContent;
+            elements.applyEstimation.textContent = '✅ Đã áp dụng!';
+            elements.applyEstimation.classList.add('bg-blue-500/20', 'text-blue-300');
+            
+            setTimeout(() => {
+                elements.applyEstimation.textContent = originalText;
+                elements.applyEstimation.classList.remove('bg-blue-500/20', 'text-blue-300');
+            }, 2000);
+        }
+        
+        function saveEstimationState() {
+            const state = {
+                targetType: elements.targetType.value,
+                targetScore: elements.targetScore.value,
+                strategy: elements.strategy.value,
+                minScore: elements.minScore.value,
+                maxScore: elements.maxScore.value
+            };
+            
+            localStorage.setItem('hocba_estimation_v1', JSON.stringify(state));
+        }
+        
+        function loadEstimationState() {
+            const saved = localStorage.getItem('hocba_estimation_v1');
+            if (!saved) return;
+            
+            try {
+                const state = JSON.parse(saved);
+                
+                if (state.targetType) elements.targetType.value = state.targetType;
+                if (state.targetScore) elements.targetScore.value = state.targetScore;
+                if (state.strategy) elements.strategy.value = state.strategy;
+                if (state.minScore) elements.minScore.value = state.minScore;
+                if (state.maxScore) elements.maxScore.value = state.maxScore;
+                
+            } catch (e) {
+                console.error('Error loading estimation state:', e);
+            }
+        }
+        
+        function updateStrategyExplanation() {
+            document.querySelectorAll('.strategy-info').forEach(info => {
+                info.classList.add('hidden');
+            });
+            
+            const currentStrategy = elements.strategy.value;
+            const explanationId = currentStrategy + '-explanation';
+            const currentExplanation = document.getElementById(explanationId);
+            
+            if (currentExplanation) {
+                currentExplanation.classList.remove('hidden');
+            }
+        }
+
+        function copyResults() {
+            const total30 = elements.total30.textContent;
+            const baseBonus = elements.baseBonus.textContent;
+            const finalBonus = elements.finalBonus.textContent;
+            const finalTotal = elements.finalTotal.textContent;
+            
+            const avgM1 = elements.avgM1.textContent;
+            const avgM2 = elements.avgM2.textContent;
+            const avgM3 = elements.avgM3.textContent;
+            
+            const areaBonus = elements.detailArea.textContent;
+            const categoryBonus = elements.detailCategory.textContent;
+            const achievementBonus = elements.detailAchievement.textContent;
+            
+            const result = `
+📊 KẾT QUẢ TÍNH ĐIỂM HỌC BẠ & ƯU TIÊN
+
+📚 Điểm trung bình các môn:
+• Môn 1: ${avgM1}
+• Môn 2: ${avgM2}  
+• Môn 3: ${avgM3}
+
+📈 Tổng điểm học bạ (thang 30): ${total30}
+
+🎯 Chi tiết điểm ưu tiên:
+• Khu vực: ${areaBonus}
+• Đối tượng: ${categoryBonus}
+• Thành tích: ${achievementBonus}
+• Ưu tiên cơ sở: ${baseBonus}
+• Điểm ưu tiên sau giảm: ${finalBonus}
+
+🏆 TỔNG CUỐI CÙNG: ${finalTotal}
+            `.trim();
+            
+            navigator.clipboard.writeText(result).then(() => {
+                const originalText = elements.copyBtn.textContent;
+                elements.copyBtn.textContent = '✅ Đã copy!';
+                elements.copyBtn.classList.add('bg-green-500/20', 'text-green-300');
+                
+                setTimeout(() => {
+                    elements.copyBtn.textContent = originalText;
+                    elements.copyBtn.classList.remove('bg-green-500/20', 'text-green-300');
+                }, 2000);
+            }).catch(() => {
+                alert('Không thể copy. Vui lòng copy thủ công.');
+            });
+        }
+
+        function setupEventListeners() {
+            [...elements.m1Inputs, ...elements.m2Inputs, ...elements.m3Inputs, 
+             elements.areaBonus, elements.categoryBonus, elements.customThreshold, elements.customDenom]
+                .forEach(input => {
+                    input.addEventListener('input', calculate);
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') calculate();
+                    });
+                });
+            
+            elements.priorityMode.addEventListener('change', () => {
+                toggleCustomOptions();
+                calculate();
+            });
+            
+            elements.allowMultiple.addEventListener('change', calculate);
+            
+            elements.achievementsList.addEventListener('change', (e) => {
+                if (e.target.classList.contains('achievement-checkbox')) {
+                    calculate();
+                }
+            });
+            
+            elements.resetBtn.addEventListener('click', resetForm);
+            elements.copyBtn.addEventListener('click', copyResults);
+            
+            elements.estimateBtn.addEventListener('click', runEstimation);
+            elements.applyEstimation.addEventListener('click', applyEstimation);
+            
+            elements.strategy.addEventListener('change', updateStrategyExplanation);
+        }
+
+        function runTests() {
+            console.log('🧪 Running unit tests...');
+            
+            console.assert(round2(1.234) === 1.23, 'round2 test failed');
+            console.assert(round2(1.235) === 1.24, 'round2 test failed');
+            
+            console.assert(avg3(8, 9, 10) === 9, 'avg3 test failed');
+            console.assert(avg3(7.5, 8.5, 9) === 8.33, 'avg3 test failed');
+            
+            console.assert(calcPriority(25, 1, 'MOET') === 0.67, 'calcPriority MOET test failed');
+            console.assert(calcPriority(20, 1, 'MOET') === 1, 'calcPriority MOET below threshold test failed');
+            console.assert(calcPriority(29, 1, 'CUSTOM', {threshold: 28, denom: 2}) === 0.5, 'calcPriority CUSTOM test failed');
+            
+            console.log('✅ All tests passed!');
+        }
+
+        function init() {
+            initAchievements();
+            setupEventListeners();
+            loadState();
+            loadEstimationState();
+            updateStrategyExplanation(); 
+            calculate();
+            runTests();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d642c843022739',t:'MTc1NDg5OTg3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
