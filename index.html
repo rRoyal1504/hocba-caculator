@@ -57,7 +57,6 @@
             margin-bottom: -5px;
         }
         
-        /* Dark theme select dropdown fixes */
         select {
             color-scheme: dark;
             -webkit-appearance: none;
@@ -127,6 +126,95 @@
             color: transparent;
             text-shadow: 0 0 0 #ffffff;
         }
+
+        /* Callout styles */
+        .callout {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .callout:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .callout-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .callout-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .callout-text {
+            flex: 1;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+
+        .callout-link a {
+            color: #60a5fa;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .callout-link a:hover {
+            color: #93c5fd;
+        }
+
+        .callout-badge {
+            background: linear-gradient(45deg, #ef4444, #f97316);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulse 2s infinite;
+        }
+
+        .callout-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #94a3b8;
+            font-size: 18px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .callout-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #f1f5f9;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen text-white font-sans">
@@ -138,6 +226,21 @@
             </h1>
 
         </header>
+
+        <!-- Callout countdown THPTQG -->
+        <div id="countdown-callout" class="callout mb-6" style="margin-top: 0.5rem;">
+            <div class="callout-content">
+                <div class="callout-icon">📊</div>
+                <div class="callout-text">
+                    <div class="callout-title">Khi nào đến kỳ thi THPTQG?</div>
+                    <div class="callout-link">
+                        <a href="https://rroyal1504.github.io/thptqg-countdown/" target="_blank">→ Click vào!</a>
+                    </div>
+                </div>
+                <div class="callout-badge">mới</div>
+            </div>
+            <button class="callout-close" onclick="closeCallout('countdown')">&times;</button>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Form nhập điểm -->
@@ -325,7 +428,7 @@
             
             <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-4">
                 <div class="text-sm text-blue-300">
-                    💡 <strong>Hint:</strong> Nhập điểm của bạn ở năm lớp 10 hoặc 11 hoặc 12 để ước lượng
+                    💡 <strong>Lưu ý:</strong> Nhập điểm của bạn ở năm lớp 10 hoặc 11 hoặc 12 để ước lượng luôn
                 </div>
             </div>
             
@@ -439,7 +542,6 @@
     </div>
 
     <script>
-        // Cấu hình thành tích (JSON)
         const ACHIEVEMENTS = [
             { id: 'hsg-quoc-gia-123', label: 'HSG Quốc gia/quốc tế (nhất/nhì/ba)', base: 2.00 },
             { id: 'khkt-quoc-gia-123', label: 'KHKT quốc gia (nhất/nhì/ba) cùng ngành', base: 2.00 },
@@ -455,7 +557,6 @@
             { id: 'olympic-304-d', label: 'Olympic 30/4 (Đồng)', base: 1.00 }
         ];
 
-        // Utility functions
         function round2(num) {
             return Math.round((num + Number.EPSILON) * 100) / 100;
         }
@@ -464,7 +565,6 @@
             return round2((a + b + c) / 3);
         }
 
-        // Core calculation function
         function calcPriority(total, baseBonus, mode, options = {}) {
             const { threshold, denom } = mode === 'MOET'
                 ? { threshold: 22.5, denom: 7.5 }
@@ -477,24 +577,17 @@
             return round2(Math.max(0, scaled));
         }
 
-        // Estimation solver functions
-        /**
-         * Solves for required scores to achieve target
-         * @param {Object} config - Configuration object
-         * @returns {Object} Solution with scores and feasibility
-         */
         function solveEstimation(config) {
             const { target, targetType, strategy, minScore, maxScore, currentScores, bonusConfig } = config;
             
-            // Get current state of scores (3 subjects x 3 years)
             const scores = [...currentScores];
-            const unknowns = []; // Track which positions need solving
+            const unknowns = [];
             
-            // Find unknown positions
+            
             for (let i = 0; i < 9; i++) {
                 if (scores[i] === null || scores[i] === undefined || isNaN(scores[i])) {
                     unknowns.push(i);
-                    scores[i] = 0; // Temporary placeholder
+                    scores[i] = 0;
                 }
             }
             
@@ -502,19 +595,18 @@
                 return { feasible: false, reason: 'Không có điểm nào cần ước lượng' };
             }
             
-            // Calculate target academic score needed
+            
             let targetAcademic;
             if (targetType === 'academic') {
                 targetAcademic = target;
             } else {
-                // Solve backwards from total target
                 targetAcademic = solveAcademicFromTotal(target, bonusConfig);
                 if (targetAcademic === null) {
                     return { feasible: false, reason: 'Không thể đạt mục tiêu với điểm ưu tiên hiện tại' };
                 }
             }
             
-            // Check feasibility bounds
+            
             const maxPossible = calculateMaxPossible(scores, unknowns, maxScore);
             const minPossible = calculateMinPossible(scores, unknowns, minScore);
             
@@ -527,14 +619,14 @@
                 };
             }
             
-            // Distribute scores according to strategy
+            
             const solution = distributeScores(scores, unknowns, targetAcademic, strategy, minScore, maxScore);
             
             if (!solution.feasible) {
                 return solution;
             }
             
-            // Calculate final results
+            
             const finalScores = [...solution.scores];
             const subjectAvgs = [
                 avg3(finalScores[0], finalScores[1], finalScores[2]),
@@ -558,18 +650,14 @@
             };
         }
         
-        /**
-         * Solve academic score needed from total target (inverse function)
-         * Uses binary search since priority function is monotonic
-         */
         function solveAcademicFromTotal(totalTarget, bonusConfig) {
             const { baseBonus, mode, options } = bonusConfig;
             
             if (baseBonus <= 0) {
-                return totalTarget; // No priority bonus
+                return totalTarget;
             }
             
-            // Binary search for academic score
+            
             let low = 0, high = 30;
             const tolerance = 0.001;
             
@@ -589,12 +677,9 @@
                 }
             }
             
-            return null; // Failed to converge
+            return null;
         }
         
-        /**
-         * Calculate maximum possible academic score
-         */
         function calculateMaxPossible(scores, unknowns, maxScore) {
             const testScores = [...scores];
             unknowns.forEach(i => testScores[i] = maxScore);
@@ -608,9 +693,6 @@
             return round2(avgs[0] + avgs[1] + avgs[2]);
         }
         
-        /**
-         * Calculate minimum possible academic score
-         */
         function calculateMinPossible(scores, unknowns, minScore) {
             const testScores = [...scores];
             unknowns.forEach(i => testScores[i] = minScore);
@@ -624,9 +706,6 @@
             return round2(avgs[0] + avgs[1] + avgs[2]);
         }
         
-        /**
-         * Distribute scores according to strategy
-         */
         function distributeScores(scores, unknowns, targetAcademic, strategy, minScore, maxScore) {
             const result = [...scores];
             
@@ -1297,12 +1376,30 @@
             console.log('✅ All tests passed!');
         }
 
+        function closeCallout(type) {
+            const callout = document.getElementById(`${type}-callout`);
+            if (callout) {
+                callout.style.display = 'none';
+                sessionStorage.setItem(`callout_${type}_closed`, 'true');
+            }
+        }
+
+        function initCallouts() {
+            if (sessionStorage.getItem('callout_countdown_closed') === 'true') {
+                const countdownCallout = document.getElementById('countdown-callout');
+                if (countdownCallout) {
+                    countdownCallout.style.display = 'none';
+                }
+            }
+        }
+
         function init() {
             initAchievements();
+            initCallouts();
             setupEventListeners();
             loadState();
             loadEstimationState();
-            updateStrategyExplanation(); 
+            updateStrategyExplanation();
             calculate();
             runTests();
         }
@@ -1313,5 +1410,5 @@
             init();
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d642c843022739',t:'MTc1NDg5OTg3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d6523f35c5a5d8',t:'MTc1NDkwMDUwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
