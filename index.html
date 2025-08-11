@@ -216,6 +216,19 @@
             50% { opacity: 0.7; }
         }
     </style>
+
+<style>
+.subject-scores {
+  display: flex !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+}
+.subject-scores span {
+  display: flex !important;
+  gap: 4px !important;
+}
+</style>
+
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 min-h-screen text-white font-sans">
     <div class="container mx-auto px-4 py-8 max-w-7xl">
@@ -298,7 +311,7 @@
                 <!-- Cấu hình điểm ưu tiên -->
                 <div class="glass rounded-xl p-6 mb-6">
                     <h2 class="text-xl font-semibold mb-4 flex items-center">
-                        ⚙️ Cấu Hình Điểm Ưu Tiên
+                        ⚙️ Cách thức tính Điểm Ưu Tiên
                         <span class="tooltip ml-2 cursor-help text-blue-400" data-tooltip="Chính sách điểm ưu tiên Chuẩn Bộ giảm từ 22,5→30; ngưỡng 28 chỉ là tùy biến theo yêu cầu từng trường">ⓘ</span>
                     </h2>
                     
@@ -423,7 +436,7 @@
         <!-- Ước lượng điểm -->
         <div class="glass rounded-xl p-6 mt-6">
             <h2 class="text-xl font-semibold mb-4 flex items-center">
-                🎯 Ước Lượng Điểm Để Đạt Mục Tiêu
+                🎯 Ước Lượng Điểm
             </h2>
             
             <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mb-4">
@@ -1194,9 +1207,9 @@
                     const score = scores[index];
                     const isUnknown = unknowns.includes(index);
                     
-                    html += `<div class="flex justify-between">`;
+                    html += `<div class="flex items-center gap-2">`;
                     html += `<span class="text-gray-300">${years[year]}:</span>`;
-                    html += `<span class="${isUnknown ? 'text-yellow-300 font-semibold' : 'text-gray-400'}">${score.toFixed(2)}${isUnknown ? ' *' : ''}</span>`;
+                    html += `<span class="${isUnknown ? 'text-yellow-300 font-semibold' : 'text-gray-200'}">${score.toFixed(2)}${isUnknown ? ' *' : ''}</span>`;
                     html += `</div>`;
                 }
                 
