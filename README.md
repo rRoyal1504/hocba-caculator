@@ -51,7 +51,7 @@ F(T) = T + P(T)
 - **Bước 4:** Áp dụng giới hạn min/max cho từng môn.
 - **Bước 5:** Nếu không khả thi → báo và đưa mục tiêu gần nhất.
 
-## 💻 Sử dụng
+## 💻 Sử dụng (nếu muốn chạy local, còn không bạn có thể vào web: https://rroyal1504.github.io/hocba-calculator/ )
 1. Mở file `index.html` trong trình duyệt.
 2. Nhập điểm lớp 10, 11, 12 (nếu có).
 3. Chọn **khu vực**, **đối tượng**, **thành tích**.
