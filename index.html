@@ -6,30 +6,57 @@
   <title>Tính Điểm Học Bạ & Ưu Tiên</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @media (prefers-reduced-motion: reduce){
-      *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-    }
+    @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
     .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1)}
     .input-glass{
-      background:rgba(255,255,255,.08);
-      backdrop-filter:blur(5px);
+      /* --- FIX: đảm bảo luôn nhìn thấy chữ trên mobile --- */
+      background-color: rgba(15,23,42,.88) !important; /* #0f172a */
       border:1px solid rgba(255,255,255,.2);
-      color:#fff !important;               /* ép chữ trắng */
-      -webkit-text-fill-color:#fff !important; /* fix Safari iOS */
-      font-weight:500;
+      color:#e5e7eb !important;                       /* text-gray-200 */
+      -webkit-text-fill-color:#e5e7eb !important;     /* iOS Safari */
+      caret-color:#e5e7eb;                             /* màu vạch nháy */
+      -webkit-appearance:none;appearance:none;        /* tránh style mặc định */
+      background-clip: padding-box;                   /* giữ nền */
     }
+    .input-glass:focus{
+      background-color: rgba(15,23,42,.96) !important;
+      outline:none;
+      box-shadow: 0 0 0 2px rgba(59,130,246,.7);      /* viền focus xanh cho rõ */
+    }
+    .input-glass::placeholder{
+      color:#94a3b8 !important;                       /* text-gray-400/300 */
+      opacity:1;
+    }
+    /* iOS đôi khi ép nền trắng cho number input khi focus → ghim lại */
+    input[type="number"].input-glass,
+    input[type="number"].input-glass:focus{
+      background-color: rgba(15,23,42,.96) !important;
+      color:#e5e7eb !important;
+      -webkit-text-fill-color:#e5e7eb !important;
+    }
+    /* Khi autofill (nếu có) thì vẫn giữ màu chữ dễ đọc */
+    input.input-glass:-webkit-autofill{
+      -webkit-text-fill-color:#111 !important;        /* chữ đen khi autofill nền vàng */
+      caret-color:#111 !important;
+      transition: background-color 9999s ease-in-out 0s; /* chặn nháy nền */
+    }
+
     .tooltip{position:relative}
     .tooltip:hover::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);color:#fff;padding:8px 12px;border-radius:6px;font-size:12px;white-space:nowrap;z-index:1000;margin-bottom:5px}
     .tooltip:hover::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:rgba(0,0,0,.9);margin-bottom:-5px}
+
     select{color-scheme:dark;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' stroke='white' viewBox='0 0 24 24' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:40px}
     select option{background:#1e1e2f!important;color:#fff!important}
     select option:hover,select option:focus,select option:checked{background:#3b82f6!important;color:#fff!important}
     select::-ms-expand{display:none}
     select:-moz-focusring{color:transparent;text-shadow:0 0 0 #fff}
+
     .callout{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(147,51,234,.1));border:1px solid rgba(59,130,246,.3);border-radius:12px;padding:16px;position:relative;backdrop-filter:blur(10px);transition:all .3s ease}
     .callout:hover{border-color:rgba(59,130,246,.5);transform:translateY(-2px);box-shadow:0 8px 25px rgba(59,130,246,.15)}
     .callout-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:#94a3b8;font-size:18px;width:24px;height:24px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}
     .callout-close:hover{background:rgba(255,255,255,.2);color:#f1f5f9}
+
     /* mobile tightening */
     @media (max-width:640px){
       .tight-grid{gap:12px}
@@ -74,17 +101,17 @@
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 10</span>
                   <input type="number" id="m1-l10" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 11</span>
                   <input type="number" id="m1-l11" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 12</span>
                   <input type="number" id="m1-l12" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="text-sm text-gray-300">TB: <span id="avg-m1" class="font-semibold text-blue-300">0.00</span></div>
               </div>
@@ -97,17 +124,17 @@
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 10</span>
                   <input type="number" id="m2-l10" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 11</span>
                   <input type="number" id="m2-l11" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 12</span>
                   <input type="number" id="m2-l12" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div class="text-sm text-gray-300">TB: <span id="avg-m2" class="font-semibold text-green-300">0.00</span></div>
               </div>
@@ -120,17 +147,17 @@
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 10</span>
                   <input type="number" id="m3-l10" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 11</span>
                   <input type="number" id="m3-l11" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-xs text-gray-300 w-14">Lớp 12</span>
                   <input type="number" id="m3-l12" min="0" max="10" step="0.1" placeholder="điểm"
-                    class="w-full p-3 tight-input rounded-lg input-glass text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    class="w-full p-3 tight-input rounded-lg input-glass placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div class="text-sm text-gray-300">TB: <span id="avg-m3" class="font-semibold text-purple-300">0.00</span></div>
               </div>
@@ -323,6 +350,7 @@
     </footer>
   </div>
 
+  <!-- ====== Toàn bộ JS tính toán/ước lượng giữ nguyên ====== -->
   <script>
     const ACHIEVEMENTS = [
       { id:'hsg-quoc-gia-123', label:'HSG Quốc gia/quốc tế (nhất/nhì/ba)', base:2.00 },
@@ -389,7 +417,7 @@
     function round2(x){return Math.round((x+Number.EPSILON)*100)/100}
     function avg3(a,b,c){return round2((a+b+c)/3)}
     function clamp(x,lo,hi){return Math.max(lo,Math.min(hi,x))}
-    function subjOf(i){return Math.floor(i/3)} // 0..2
+    function subjOf(i){return Math.floor(i/3)}
 
     function calcPriority(total, baseBonus, mode, opt={}){
       const {threshold,denom} = (mode==='MOET') ? {threshold:22.5,denom:7.5} : {threshold:(opt.threshold??28),denom:(opt.denom??2)};
@@ -531,7 +559,6 @@
       return s;
     }
 
-    // ====== Smart allocation core ======
     function projectToBoxSum(b, lo, hi, need){
       const n=b.length;
       const sumLo=lo.reduce((x,y)=>x+y,0);
@@ -575,7 +602,6 @@
       return {feasible:true, values:v};
     }
 
-    // Minimax (∞-norm) chuẩn: tìm r nhỏ nhất sao cho tồn tại x với |x-b|∞ ≤ r, x∈[min,max], sum x = need
     function isFeasibleRadius(b, minA, maxA, need, r){
       const n=b.length;
       let loSum=0, hiSum=0;
@@ -588,7 +614,7 @@
       return (need>=loSum-1e-6 && need<=hiSum+1e-6);
     }
     function solveMinimax(b, minA, maxA, need){
-      let L=0, R=10; // r trong [0,10]
+      let L=0, R=10;
       for(let it=0; it<60; it++){
         const mid=(L+R)/2;
         if (isFeasibleRadius(b,minA,maxA,need,mid)) R=mid; else L=mid;
@@ -610,7 +636,7 @@
 
     function distributeScores(scores, unknowns, targetAcademic, strategy, minScore, maxScore){
       const res=[...scores];
-      if (unknowns.length===0) unknowns = [2,5,8]; // mặc định ước lượng lớp 12
+      if (unknowns.length===0) unknowns = [2,5,8];
       const currentSum = calculateCurrentAcademicSum(scores, unknowns);
       const requiredSum = targetAcademic * 3;
       const need = requiredSum - currentSum;
@@ -635,7 +661,7 @@
       for(let i=0;i<9;i++){
         if(scores[i]===null || scores[i]===undefined || isNaN(scores[i])){ unknowns.push(i); scores[i]=0; }
       }
-      if (unknowns.length===0) unknowns = [2,5,8]; // ước lượng lớp 12 mặc định
+      if (unknowns.length===0) unknowns = [2,5,8];
 
       let targetAcademic;
       if (targetType==='academic'){
@@ -645,7 +671,6 @@
         if (targetAcademic===null) return {feasible:false, reason:'Không thể đạt mục tiêu với ưu tiên hiện tại'};
       }
 
-      // biên khả dĩ
       const maxPossible = (()=>{const t=[...scores]; unknowns.forEach(i=>t[i]=maxScore);
         const av=[avg3(t[0],t[1],t[2]),avg3(t[3],t[4],t[5]),avg3(t[6],t[7],t[8])]; return round2(av[0]+av[1]+av[2]);})();
       const minPossible = (()=>{const t=[...scores]; unknowns.forEach(i=>t[i]=minScore);
@@ -706,47 +731,39 @@
     }
 
     function displayEstimationResults(sol) {
-    if (!sol.feasible) {
+      if (!sol.feasible) {
         elements.estimationResult.classList.add('hidden');
         elements.estimationError.classList.remove('hidden');
 
-        // Nếu solver có trả cả min/max thì chọn thông điệp phù hợp
         const hasMin = sol.minAchievable !== undefined;
         const hasMax = sol.maxAchievable !== undefined;
 
         if (hasMin && hasMax) {
-        // Khi mục tiêu nằm ngoài [min, max]
-        // Lấy mục tiêu người dùng (để so sánh)
-        const G = parseFloat(elements.targetScore.value) || 0;
-        const isTotal = elements.targetType.value === 'total';
+          const G = parseFloat(elements.targetScore.value) || 0;
+          const isTotal = elements.targetType.value === 'total';
+          let GA = G;
+          if (isTotal && sol.targetAcademic !== undefined) GA = sol.targetAcademic;
 
-        // Đổi mục tiêu về học bạ nếu là "tổng cuối", để so với min/max (đều đang là học bạ)
-        // Nếu bạn không muốn đổi, bạn có thể chỉ so sánh thông điệp theo cờ solver trả về.
-        let GA = G;
-        if (isTotal && sol.targetAcademic !== undefined) {
-            GA = sol.targetAcademic; // solver đã tính sẵn T cần cho F=G
-        }
-
-        if (GA < sol.minAchievable - 1e-6) {
+          if (GA < sol.minAchievable - 1e-6) {
             elements.errorMessage.innerHTML =
-            `Mục tiêu <b>quá thấp</b>. Mục tiêu <u>nhỏ nhất</u> có thể đạt: <b>${sol.minAchievable.toFixed(2)}</b>`;
-        } else if (GA > sol.maxAchievable + 1e-6) {
+              `Mục tiêu <b>quá thấp</b>. Mục tiêu <u>nhỏ nhất</u> có thể đạt: <b>${sol.minAchievable.toFixed(2)}</b>`;
+          } else if (GA > sol.maxAchievable + 1e-6) {
             elements.errorMessage.innerHTML =
-            `Mục tiêu <b>quá cao</b>. Mục tiêu <u>tối đa</u> có thể đạt: <b>${sol.maxAchievable.toFixed(2)}</b>`;
-        } else {
+              `Mục tiêu <b>quá cao</b>. Mục tiêu <u>tối đa</u> có thể đạt: <b>${sol.maxAchievable.toFixed(2)}</b>`;
+          } else {
             elements.errorMessage.textContent = sol.reason || 'Không khả thi';
-        }
+          }
         } else if (hasMax) {
-        elements.errorMessage.innerHTML =
+          elements.errorMessage.innerHTML =
             `Mục tiêu <u>tối đa</u> có thể đạt: <b>${sol.maxAchievable.toFixed(2)}</b>`;
         } else if (hasMin) {
-        elements.errorMessage.innerHTML =
+          elements.errorMessage.innerHTML =
             `Mục tiêu <u>nhỏ nhất</u> có thể đạt: <b>${sol.minAchievable.toFixed(2)}</b>`;
         } else {
-        elements.errorMessage.textContent = sol.reason || 'Không khả thi';
+          elements.errorMessage.textContent = sol.reason || 'Không khả thi';
         }
         return;
-    }
+      }
       elements.estimationError.classList.add('hidden');
       elements.estimationResult.classList.remove('hidden');
 
@@ -761,49 +778,40 @@
     }
 
     function genEstimationTable(sol){
-    const {scores, unknowns, subjectAvgs} = sol;
-    const subNames = ['Môn 1','Môn 2','Môn 3'];
-    const years    = ['Lớp 10','Lớp 11','Lớp 12'];
+      const {scores, unknowns, subjectAvgs} = sol;
+      const subNames = ['Môn 1','Môn 2','Môn 3'];
+      const years    = ['Lớp 10','Lớp 11','Lớp 12'];
 
-    let html = '<div class="text-base md:text-lg font-semibold mb-3 text-blue-300">Điểm đề xuất:</div>';
+      let html = '<div class="text-base md:text-lg font-semibold mb-3 text-blue-300">Điểm đề xuất:</div>';
 
-    for (let s = 0; s < 3; s++) {
+      for (let s = 0; s < 3; s++) {
         html += `
         <div class="bg-white/5 rounded-xl p-4 md:p-5 mb-3 md:mb-4 shadow-sm">
-            <div class="font-semibold text-${['blue','green','purple'][s]}-300 mb-3 text-lg md:text-xl">
+          <div class="font-semibold text-${['blue','green','purple'][s]}-300 mb-3 text-lg md:text-xl">
             ${subNames[s]} (TB: ${subjectAvgs[s].toFixed(2)})
-            </div>
-
-            <!-- Hàng “Lớp X: 9.50” to và thoáng hơn -->
-            <div class="space-y-2 md:space-y-2.5 text-sm md:text-base leading-6">
-        `;
+          </div>
+          <div class="space-y-2 md:space-y-2.5 text-sm md:text-base leading-6">`;
 
         for (let y = 0; y < 3; y++) {
-        const idx = s*3 + y;
-        const val = scores[idx];
-        const unk = unknowns.includes(idx);
+          const idx = s*3 + y;
+          const val = scores[idx];
+          const unk = unknowns.includes(idx);
 
-        html += `
+          html += `
             <div class="flex items-center gap-2">
-            <span class="text-gray-300 min-w-[70px] md:min-w-[80px]">• ${years[y]}:</span>
-            <span class="${unk ? 'text-yellow-300 font-semibold' : 'text-gray-100'}">
+              <span class="text-gray-300 min-w-[70px] md:min-w-[80px]">• ${years[y]}:</span>
+              <span class="${unk ? 'text-yellow-300 font-semibold' : 'text-gray-100'}">
                 ${val.toFixed(2)}${unk ? ' *' : ''}
-            </span>
-            </div>
-        `;
+              </span>
+            </div>`;
         }
 
-        html += `
-            </div>
-        </div>
-        `;
+        html += `</div></div>`;
+      }
+
+      html += `<div class="text-xs md:text-sm text-yellow-300 mt-2">* Điểm được ước lượng</div>`;
+      return html;
     }
-
-    html += `<div class="text-xs md:text-sm text-yellow-300 mt-2">* Điểm được ước lượng</div>`;
-    return html;
-    }
-
-
 
     function applyEstimation(){
       const sol=window.currentEstimationSolution; if(!sol) return;
