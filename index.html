@@ -10,36 +10,33 @@
 
     .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1)}
     .input-glass{
-      /* --- FIX: đảm bảo luôn nhìn thấy chữ trên mobile --- */
-      background-color: rgba(15,23,42,.88) !important; /* #0f172a */
+      background-color: rgba(15,23,42,.88) !important;
       border:1px solid rgba(255,255,255,.2);
-      color:#e5e7eb !important;                       /* text-gray-200 */
-      -webkit-text-fill-color:#e5e7eb !important;     /* iOS Safari */
-      caret-color:#e5e7eb;                             /* màu vạch nháy */
-      -webkit-appearance:none;appearance:none;        /* tránh style mặc định */
-      background-clip: padding-box;                   /* giữ nền */
+      color:#e5e7eb !important;
+      -webkit-text-fill-color:#e5e7eb !important;  
+      caret-color:#e5e7eb;
+      -webkit-appearance:none;appearance:none;    
+      background-clip: padding-box;
     }
     .input-glass:focus{
       background-color: rgba(15,23,42,.96) !important;
       outline:none;
-      box-shadow: 0 0 0 2px rgba(59,130,246,.7);      /* viền focus xanh cho rõ */
+      box-shadow: 0 0 0 2px rgba(59,130,246,.7);
     }
     .input-glass::placeholder{
-      color:#94a3b8 !important;                       /* text-gray-400/300 */
+      color:#94a3b8 !important;
       opacity:1;
     }
-    /* iOS đôi khi ép nền trắng cho number input khi focus → ghim lại */
     input[type="number"].input-glass,
     input[type="number"].input-glass:focus{
       background-color: rgba(15,23,42,.96) !important;
       color:#e5e7eb !important;
       -webkit-text-fill-color:#e5e7eb !important;
     }
-    /* Khi autofill (nếu có) thì vẫn giữ màu chữ dễ đọc */
     input.input-glass:-webkit-autofill{
-      -webkit-text-fill-color:#111 !important;        /* chữ đen khi autofill nền vàng */
+      -webkit-text-fill-color:#111 !important;
       caret-color:#111 !important;
-      transition: background-color 9999s ease-in-out 0s; /* chặn nháy nền */
+      transition: background-color 9999s ease-in-out 0s; 
     }
 
     .tooltip{position:relative}
@@ -57,7 +54,6 @@
     .callout-close{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:#94a3b8;font-size:18px;width:24px;height:24px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease}
     .callout-close:hover{background:rgba(255,255,255,.2);color:#f1f5f9}
 
-    /* mobile tightening */
     @media (max-width:640px){
       .tight-grid{gap:12px}
       .tight-stack > * + *{margin-top:8px}
@@ -350,7 +346,7 @@
     </footer>
   </div>
 
-  <!-- ====== Toàn bộ JS tính toán/ước lượng giữ nguyên ====== -->
+  <!-- ====== JS ====== -->
   <script>
     const ACHIEVEMENTS = [
       { id:'hsg-quoc-gia-123', label:'HSG Quốc gia/quốc tế (nhất/nhì/ba)', base:2.00 },
